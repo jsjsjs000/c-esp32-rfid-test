@@ -1,0 +1,34 @@
+{
+	"version": "2.0.0",
+	"presentation": {
+		"echo": false,
+		"reveal": "always",
+		"focus": true,
+		"panel": "dedicated",
+		"showReuseMessage": false,
+	},
+	"tasks": [
+		{
+			"label": "build main debug and run",
+			"type": "shell",
+			"command": "ninja && main.exe",
+			"args": [],
+			"options": {
+				"cwd": "${workspaceFolder}/src/out"
+			},
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "build test debug and run",
+			"type": "shell",
+			"command": "ninja && test.exe",
+			"args": [],
+			"options": {
+				"cwd": "${workspaceFolder}/test/test/out"
+			},
+			"group": "build",
+			"problemMatcher": []
+		}
+	]
+}
