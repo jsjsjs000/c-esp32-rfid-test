@@ -1,14 +1,15 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include "main.h"
 #include "logic.h"
 
 static bool programmingMode = false;
 int programmingBeepsCount = 0;
 int programmingBeeps[RFID_PROGRAMMING_BEEPS_COUNT] = { 0 };
 bool programmingStart = false;
-int programmingStartMs = 0;
+TickType_t programmingStartMs = 0;
 int programmingTouchCardCount = 0;
-int programmingTouchCardLastMs = 0;
+TickType_t programmingTouchCardLastMs = 0;
 
 void RfidReset(void)
 {

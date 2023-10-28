@@ -15,7 +15,9 @@ ninja -v
 main.exe
 
 # or
-cmake .. -GNinja && ninja -v && template_tests.exe
+cd test\test\out
+cmake .. -GNinja && ninja -v && test.exe
+
 cmake .. -GNinja && ninja -v && main.exe
 ------------------------------------------------------------
 

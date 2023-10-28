@@ -11,7 +11,7 @@
 		{
 			"label": "build main debug and run",
 			"type": "shell",
-			"command": "ninja && main.exe",
+			"command": "ninja -v && main.exe",
 			"args": [],
 			"options": {
 				"cwd": "${workspaceFolder}/src/out"
@@ -22,7 +22,7 @@
 		{
 			"label": "build test debug and run",
 			"type": "shell",
-			"command": "ninja && test.exe",
+			"command": "ninja -v && test.exe",
 			"args": [],
 			"options": {
 				"cwd": "${workspaceFolder}/test/test/out"

@@ -10,17 +10,21 @@ uint8_t rfid_master[] = { 0x31, 0x0a, 0x24, 0x67, 0xb1 };
 uint8_t rfid_user1[] = { 0x32, 0xba, 0x24, 0x87, 0xb2 };
 uint8_t rfid_user2[] = { 0x33, 0xfa, 0x24, 0x97, 0xb3 };
 
-void thread_loop(void)
+// void thread_loop(void)
+// {
+// 	for (int ticks = 0; ticks < 10 * 1000; ticks += 10)
+// 		RfidTaskTick10ms(ticks);
+// }
+
+void test_init(void)
 {
-	for (int ticks = 0; ticks < 10 * 1000; ticks += 10)
-		RfidTaskTick10ms(ticks);
+	// std::thread thread(thread_loop);
+	// thread.join();
+	RfidReset();
 }
 
-void test_init()
+void test_finish(void)
 {
-	std::thread thread(thread_loop);
-	thread.join();
-	RfidReset();
 }
 
 TEST_CASE("Master RFID card", "[master_rfid_card]")
@@ -36,6 +40,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 				master_touch1 + RFID_PROGRAMMING_MODE_MASTER_COUNT * RFID_PROGRAMMING_CYCLE_LONG + tolerance));
 		REQUIRE(programmingBeepsCount == 1);
 		REQUIRE(programmingBeeps[0] == master_touch1);
+		test_finish();
 	}
 
 	THEN("Case B - action: none")
@@ -52,6 +57,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 				master_touch2 + RFID_PROGRAMMING_MODE_MASTER_COUNT * RFID_PROGRAMMING_CYCLE_LONG + tolerance));
 		REQUIRE(programmingBeepsCount == 1);
 		REQUIRE(programmingBeeps[0] == master_touch1);
+		test_finish();
 	}
 
 	THEN("Case C - action: none")
@@ -73,6 +79,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		REQUIRE(programmingBeeps[0] == master_touch1);
 		REQUIRE(programmingBeeps[1] == master_touch2);
 		REQUIRE(programmingBeeps[2] == master_touch3);
+		test_finish();
 	}
 
 	THEN("Case D - action: programming mode - adding user cards")
@@ -96,6 +103,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		REQUIRE(programmingBeeps[3] == master_touch3 + RFID_PROGRAMMING_CYCLE_LONG);
 		REQUIRE(programmingBeeps[4] == master_touch3 + RFID_PROGRAMMING_CYCLE_LONG + RFID_PROGRAMMING_BEEP_CONFIRMATION_DELAY);
 		REQUIRE(programmingBeeps[5] == master_touch3 + RFID_PROGRAMMING_CYCLE_LONG + 2 * RFID_PROGRAMMING_BEEP_CONFIRMATION_DELAY);
+		test_finish();
 	}
 /*
 	THEN("Case E - action: none")
@@ -120,6 +128,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		REQUIRE(programmingBeeps[1] == user_touch1);
 		REQUIRE(programmingBeeps[2] == master_touch2);
 		REQUIRE(programmingBeeps[3] == master_touch3);
+		test_finish();
 	}
 
 	THEN("Case F - action: programming mode - adding user cards")
@@ -162,6 +171,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		REQUIRE(programmingBeeps[3] == master_touch9 + RFID_PROGRAMMING_CYCLE_LONG);
 		REQUIRE(programmingBeeps[4] == master_touch9 + RFID_PROGRAMMING_CYCLE_LONG + RFID_PROGRAMMING_BEEP_CONFIRMATION_DELAY);
 		REQUIRE(programmingBeeps[5] == master_touch9 + RFID_PROGRAMMING_CYCLE_LONG + 2 * RFID_PROGRAMMING_BEEP_CONFIRMATION_DELAY);
+		test_finish();
 	}
 
 	THEN("Case G - action: none")
@@ -203,6 +213,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		REQUIRE(programmingBeeps[0] == master_touch1);
 		REQUIRE(programmingBeeps[1] == master_touch5);
 		REQUIRE(programmingBeeps[2] == master_touch9);
+		test_finish();
 	}
 
 	THEN("Case E - action: none")
@@ -227,6 +238,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		REQUIRE(programmingBeeps[1] == master_touch2);
 		REQUIRE(programmingBeeps[2] == master_touch3);
 		REQUIRE(programmingBeeps[3] == user_touch1);
+		test_finish();
 	}
 */
 
@@ -237,6 +249,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 	// 	REQUIRE_FALSE(RfidIsProgrammingMode(1000 + 100));
 	// 	RfidCardRead(rfid_master, 1000 + 3000);
 	// 	REQUIRE_FALSE(RfidIsProgrammingMode(1000 + 3000 + 100));
+	// 	test_finish();
 	// }
 
 	// THEN("Touch master card 2 time then later touch master card - nothing to do")
@@ -248,6 +261,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 	// 	REQUIRE_FALSE(RfidIsProgrammingMode(1000 + 1000 + 100));
 	// 	RfidCardRead(rfid_master, 1000 + 1000 + 3000);
 	// 	REQUIRE_FALSE(RfidIsProgrammingMode(1000 + 1000 + 3000 + 100));
+	// 	test_finish();
 	// }
 }
 
