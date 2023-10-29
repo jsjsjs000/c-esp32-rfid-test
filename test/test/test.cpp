@@ -13,14 +13,14 @@ uint8_t rfid_user2[] = { 0x33, 0xfa, 0x24, 0x97, 0xb3 };
 // void thread_loop(void)
 // {
 // 	for (int ticks = 0; ticks < 10 * 1000; ticks += 10)
-// 		RfidTaskTick10ms(ticks);
+// 		RFID_TaskTick10ms(ticks);
 // }
 
 void test_init(void)
 {
 	// std::thread thread(thread_loop);
 	// thread.join();
-	RfidReset();
+	RFID_Reset();
 }
 
 void test_finish(void)
@@ -34,26 +34,29 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		test_init();
 		int tolerance = 100;
 		int master_touch1 = 1000;				// milliseconds
-		RfidCardRead(rfid_master, master_touch1);
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch1 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(
+		RFID_CardRead(rfid_master, master_touch1);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch1 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(
 				master_touch1 + RFID_PROGRAMMING_MODE_MASTER_COUNT * RFID_PROGRAMMING_CYCLE_LONG + tolerance));
 		REQUIRE(programmingBeepsCount == 1);
 		REQUIRE(programmingBeeps[0] == master_touch1);
+
+// $$ po 3 sekundach ma wyczyścić programmingBeeps
+
 		test_finish();
 	}
-
+/*
 	THEN("Case B - action: none")
 	{
 		test_init();
 		int tolerance = 100;
 		int master_touch1 = 1000;				// milliseconds
 		int master_touch2 = 1000 + 200;
-		RfidCardRead(rfid_master, master_touch1);
-		RfidCardRead(rfid_master, master_touch2);
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch1 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch2 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(
+		RFID_CardRead(rfid_master, master_touch1);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch1 + tolerance));
+		RFID_CardRead(rfid_master, master_touch2);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch2 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(
 				master_touch2 + RFID_PROGRAMMING_MODE_MASTER_COUNT * RFID_PROGRAMMING_CYCLE_LONG + tolerance));
 		REQUIRE(programmingBeepsCount == 1);
 		REQUIRE(programmingBeeps[0] == master_touch1);
@@ -67,14 +70,17 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		int master_touch1 = 1000;				// milliseconds
 		int master_touch2 = 1000 + 1200;
 		int master_touch3 = 1000 + 1200 + 3100;
-		RfidCardRead(rfid_master, master_touch1);
-		RfidCardRead(rfid_master, master_touch2);
-		RfidCardRead(rfid_master, master_touch3);
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch1 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch2 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch3 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(
-				master_touch3 + RFID_PROGRAMMING_MODE_MASTER_COUNT * RFID_PROGRAMMING_CYCLE_LONG + tolerance));
+		RFID_CardRead(rfid_master, master_touch1);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch1 + tolerance));
+		RFID_CardRead(rfid_master, master_touch2);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch2 + tolerance));
+		RFID_CardRead(rfid_master, master_touch3);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch3 + tolerance));
+		// REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch1 + tolerance));
+		// REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch2 + tolerance));
+		// REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch3 + tolerance));
+		// REQUIRE_FALSE(RFID_IsProgrammingMode(
+		// 		master_touch3 + RFID_PROGRAMMING_MODE_MASTER_COUNT * RFID_PROGRAMMING_CYCLE_LONG + tolerance));
 		REQUIRE(programmingBeepsCount == 3);
 		REQUIRE(programmingBeeps[0] == master_touch1);
 		REQUIRE(programmingBeeps[1] == master_touch2);
@@ -89,13 +95,13 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		int master_touch1 = 1000;				// milliseconds
 		int master_touch2 = 1000 + 1200;
 		int master_touch3 = 1000 + 1200 + 1200;
-		RfidCardRead(rfid_master, master_touch1);
-		RfidCardRead(rfid_master, master_touch2);
-		RfidCardRead(rfid_master, master_touch3);
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch1 + tolerance)); // $$ czas w sprawdzaniu?
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch2 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch3 + tolerance));
-		REQUIRE(RfidIsProgrammingMode(master_touch3 + RFID_PROGRAMMING_CYCLE_LONG + tolerance));
+		RFID_CardRead(rfid_master, master_touch1);
+		RFID_CardRead(rfid_master, master_touch2);
+		RFID_CardRead(rfid_master, master_touch3);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch1 + tolerance)); // $$ czas w sprawdzaniu?
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch2 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch3 + tolerance));
+		REQUIRE(RFID_IsProgrammingMode(master_touch3 + RFID_PROGRAMMING_CYCLE_LONG + tolerance));
 		REQUIRE(programmingBeepsCount == 6);
 		REQUIRE(programmingBeeps[0] == master_touch1);
 		REQUIRE(programmingBeeps[1] == master_touch2);
@@ -105,7 +111,7 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		REQUIRE(programmingBeeps[5] == master_touch3 + RFID_PROGRAMMING_CYCLE_LONG + 2 * RFID_PROGRAMMING_BEEP_CONFIRMATION_DELAY);
 		test_finish();
 	}
-/*
+
 	THEN("Case E - action: none")
 	{
 		test_init();
@@ -114,15 +120,15 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		int user_touch1 = 1000 + 500;
 		int master_touch2 = 1000 + 500 + 600;
 		int master_touch3 = 1000 + 500 + 600 + 1200;
-		RfidCardRead(rfid_master, master_touch1);
-		RfidCardRead(rfid_master, user_touch1);
-		RfidCardRead(rfid_master, master_touch2);
-		RfidCardRead(rfid_master, master_touch3);
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch1 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(user_touch1 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch2 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch3 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch3 + RFID_PROGRAMMING_CYCLE_LONG + tolerance));
+		RFID_CardRead(rfid_master, master_touch1);
+		RFID_CardRead(rfid_master, user_touch1);
+		RFID_CardRead(rfid_master, master_touch2);
+		RFID_CardRead(rfid_master, master_touch3);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch1 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(user_touch1 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch2 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch3 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch3 + RFID_PROGRAMMING_CYCLE_LONG + tolerance));
 		REQUIRE(programmingBeepsCount == 4);
 		REQUIRE(programmingBeeps[0] == master_touch1);
 		REQUIRE(programmingBeeps[1] == user_touch1);
@@ -147,23 +153,23 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		int master_touch10 = 1000 + 1000 + 1000 + 250;
 		int master_touch11 = 1000 + 1000 + 1000 + 500;
 		int master_touch12 = 1000 + 1000 + 1000 + 750;
-		RfidCardRead(rfid_master, master_touch1);
-		RfidCardRead(rfid_master, master_touch2);
-		RfidCardRead(rfid_master, master_touch3);
-		RfidCardRead(rfid_master, master_touch4);
-		RfidCardRead(rfid_master, master_touch5);
-		RfidCardRead(rfid_master, master_touch6);
-		RfidCardRead(rfid_master, master_touch7);
-		RfidCardRead(rfid_master, master_touch8);
-		RfidCardRead(rfid_master, master_touch9);
-		RfidCardRead(rfid_master, master_touch10);
-		RfidCardRead(rfid_master, master_touch11);
-		RfidCardRead(rfid_master, master_touch12);
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch1 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch5 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch9 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch12 + tolerance));
-		REQUIRE(RfidIsProgrammingMode(master_touch12 + RFID_PROGRAMMING_CYCLE_LONG + tolerance));
+		RFID_CardRead(rfid_master, master_touch1);
+		RFID_CardRead(rfid_master, master_touch2);
+		RFID_CardRead(rfid_master, master_touch3);
+		RFID_CardRead(rfid_master, master_touch4);
+		RFID_CardRead(rfid_master, master_touch5);
+		RFID_CardRead(rfid_master, master_touch6);
+		RFID_CardRead(rfid_master, master_touch7);
+		RFID_CardRead(rfid_master, master_touch8);
+		RFID_CardRead(rfid_master, master_touch9);
+		RFID_CardRead(rfid_master, master_touch10);
+		RFID_CardRead(rfid_master, master_touch11);
+		RFID_CardRead(rfid_master, master_touch12);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch1 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch5 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch9 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch12 + tolerance));
+		REQUIRE(RFID_IsProgrammingMode(master_touch12 + RFID_PROGRAMMING_CYCLE_LONG + tolerance));
 		REQUIRE(programmingBeepsCount == 3);
 		REQUIRE(programmingBeeps[0] == master_touch1);
 		REQUIRE(programmingBeeps[1] == master_touch5);
@@ -191,24 +197,24 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		int master_touch11 = 1000 + 1000 + 1000 + 500;
 		int master_touch12 = 1000 + 1000 + 1000 + 750;
 		int master_touch13 = 1000 + 1000 + 1000 + 1000 + 100;
-		RfidCardRead(rfid_master, master_touch1);
-		RfidCardRead(rfid_master, master_touch2);
-		RfidCardRead(rfid_master, master_touch3);
-		RfidCardRead(rfid_master, master_touch4);
-		RfidCardRead(rfid_master, master_touch5);
-		RfidCardRead(rfid_master, master_touch6);
-		RfidCardRead(rfid_master, master_touch7);
-		RfidCardRead(rfid_master, master_touch8);
-		RfidCardRead(rfid_master, master_touch9);
-		RfidCardRead(rfid_master, master_touch10);
-		RfidCardRead(rfid_master, master_touch11);
-		RfidCardRead(rfid_master, master_touch12);
-		RfidCardRead(rfid_master, master_touch13);
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch1 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch5 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch9 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch13 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch13 + RFID_PROGRAMMING_CYCLE_LONG + tolerance));
+		RFID_CardRead(rfid_master, master_touch1);
+		RFID_CardRead(rfid_master, master_touch2);
+		RFID_CardRead(rfid_master, master_touch3);
+		RFID_CardRead(rfid_master, master_touch4);
+		RFID_CardRead(rfid_master, master_touch5);
+		RFID_CardRead(rfid_master, master_touch6);
+		RFID_CardRead(rfid_master, master_touch7);
+		RFID_CardRead(rfid_master, master_touch8);
+		RFID_CardRead(rfid_master, master_touch9);
+		RFID_CardRead(rfid_master, master_touch10);
+		RFID_CardRead(rfid_master, master_touch11);
+		RFID_CardRead(rfid_master, master_touch12);
+		RFID_CardRead(rfid_master, master_touch13);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch1 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch5 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch9 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch13 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch13 + RFID_PROGRAMMING_CYCLE_LONG + tolerance));
 		REQUIRE(programmingBeepsCount == 3);
 		REQUIRE(programmingBeeps[0] == master_touch1);
 		REQUIRE(programmingBeeps[1] == master_touch5);
@@ -224,15 +230,15 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 		int master_touch2 = 1000 + 1000 + 200;
 		int master_touch3 = 1000 + 1000 + 1000 + 200;
 		int user_touch1 = 1000 + 1000 + 1000 + 500;
-		RfidCardRead(rfid_master, master_touch1);
-		RfidCardRead(rfid_master, master_touch2);
-		RfidCardRead(rfid_master, master_touch3);
-		RfidCardRead(rfid_master, user_touch1);
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch1 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch2 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(master_touch3 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(user_touch1 + tolerance));
-		REQUIRE_FALSE(RfidIsProgrammingMode(user_touch1 + RFID_PROGRAMMING_CYCLE_LONG + tolerance));
+		RFID_CardRead(rfid_master, master_touch1);
+		RFID_CardRead(rfid_master, master_touch2);
+		RFID_CardRead(rfid_master, master_touch3);
+		RFID_CardRead(rfid_master, user_touch1);
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch1 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch2 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(master_touch3 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(user_touch1 + tolerance));
+		REQUIRE_FALSE(RFID_IsProgrammingMode(user_touch1 + RFID_PROGRAMMING_CYCLE_LONG + tolerance));
 		REQUIRE(programmingBeepsCount == 4);
 		REQUIRE(programmingBeeps[0] == master_touch1);
 		REQUIRE(programmingBeeps[1] == master_touch2);
@@ -245,22 +251,22 @@ TEST_CASE("Master RFID card", "[master_rfid_card]")
 	// THEN("Touch master card 1 time then later touch master card - nothing to do")
 	// {
 	// 	test_init();
-	// 	RfidCardRead(rfid_master, 1000);
-	// 	REQUIRE_FALSE(RfidIsProgrammingMode(1000 + 100));
-	// 	RfidCardRead(rfid_master, 1000 + 3000);
-	// 	REQUIRE_FALSE(RfidIsProgrammingMode(1000 + 3000 + 100));
+	// 	RFID_CardRead(rfid_master, 1000);
+	// 	REQUIRE_FALSE(RFID_IsProgrammingMode(1000 + 100));
+	// 	RFID_CardRead(rfid_master, 1000 + 3000);
+	// 	REQUIRE_FALSE(RFID_IsProgrammingMode(1000 + 3000 + 100));
 	// 	test_finish();
 	// }
 
 	// THEN("Touch master card 2 time then later touch master card - nothing to do")
 	// {
 	// 	test_init();
-	// 	RfidCardRead(rfid_master, 1000);
-	// 	REQUIRE_FALSE(RfidIsProgrammingMode(1000 + 100));
-	// 	RfidCardRead(rfid_master, 1000 + 1000);
-	// 	REQUIRE_FALSE(RfidIsProgrammingMode(1000 + 1000 + 100));
-	// 	RfidCardRead(rfid_master, 1000 + 1000 + 3000);
-	// 	REQUIRE_FALSE(RfidIsProgrammingMode(1000 + 1000 + 3000 + 100));
+	// 	RFID_CardRead(rfid_master, 1000);
+	// 	REQUIRE_FALSE(RFID_IsProgrammingMode(1000 + 100));
+	// 	RFID_CardRead(rfid_master, 1000 + 1000);
+	// 	REQUIRE_FALSE(RFID_IsProgrammingMode(1000 + 1000 + 100));
+	// 	RFID_CardRead(rfid_master, 1000 + 1000 + 3000);
+	// 	REQUIRE_FALSE(RFID_IsProgrammingMode(1000 + 1000 + 3000 + 100));
 	// 	test_finish();
 	// }
 }

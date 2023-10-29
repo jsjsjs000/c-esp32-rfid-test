@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdint.h>
 #include "main.h"
 #include "logic.h"
 
@@ -10,8 +11,11 @@ bool programmingStart = false;
 TickType_t programmingStartMs = 0;
 int programmingTouchCardCount = 0;
 TickType_t programmingTouchCardLastMs = 0;
+TickType_t lastTickMs = 0;
 
-void RfidReset(void)
+static void RFID_TEST_Delay(TickType_t milliseconds);
+
+void RFID_Reset(void)
 {
 	programmingMode = false;
 	programmingBeepsCount = 0;
@@ -21,15 +25,22 @@ void RfidReset(void)
 	programmingStartMs = 0;
 	programmingTouchCardCount = 0;
 	programmingTouchCardLastMs = 0;
+	lastTickMs = 0;
 }
 
-bool RfidIsProgrammingMode(uint32_t milliseconds)
+bool RFID_IsProgrammingMode(TickType_t milliseconds)
 {
+	RFID_TEST_Delay(milliseconds);
+	lastTickMs = milliseconds;
+
 	return programmingMode;
 }
 
-void RfidCardRead(uint8_t serial_numer[], uint32_t milliseconds)
+void RFID_CardRead(uint8_t serial_numer[], TickType_t milliseconds)
 {
+	RFID_TEST_Delay(milliseconds);
+	lastTickMs = milliseconds;
+
 	if (!programmingStart)
 	{
 		programmingStartMs = milliseconds;
@@ -69,9 +80,9 @@ void RfidCardRead(uint8_t serial_numer[], uint32_t milliseconds)
 	// 	return false;
 }
 
-void RfidTaskTick10ms(uint32_t milliseconds)
+void RFID_TaskTick10ms(TickType_t milliseconds)
 {
-	// printf("%d ms\r\n", milliseconds);
+	// printf("tick %d ms\r\n", milliseconds);
 
 	if (programmingStart && milliseconds - programmingStartMs > RFID_PROGRAMMING_CYCLE_LONG)
 	{
@@ -86,7 +97,19 @@ void RfidTaskTick10ms(uint32_t milliseconds)
 	}
 }
 
-void print_debug(void)
+void RFID_TEST_Delay(TickType_t milliseconds)
+{
+#ifdef TEST
+	while (lastTickMs <= milliseconds)
+	{
+		// printf("delay %d ms\r\n", lastTickMs);
+		RFID_TaskTick10ms(milliseconds);
+		lastTickMs += RFID_TICK_LONG_MS;
+	}
+#endif
+}
+
+void RFID_PrintDebug(void)
 {
 	printf("programmingTouchCardCount %d\r\n", programmingTouchCardCount);
 }
